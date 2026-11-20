@@ -4,7 +4,7 @@
   "description": "Ceptory MCP server: manage cameras, workflows, alerts and video search from Claude, Cursor, Codex, Gemini or any MCP agent.",
   "type": "module",
   "bin": {
-    "ceptory-mcp": "./build/index.js"
+    "ceptory-mcp": "build/index.js"
   },
   "main": "./build/index.js",
   "files": [
