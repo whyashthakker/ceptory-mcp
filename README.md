@@ -11,55 +11,49 @@ Connect any MCP agent (Claude, Cursor, Codex, Gemini CLI, VS Code, Windsurf, the
 
 The agent acts as you. It uses your workspace, role and prepaid balance, with the same checks as the Ceptory dashboard.
 
-## 1. Get a token
+## Connect
 
-Go to **[ceptory.com/dashboard/mcp](https://www.ceptory.com/dashboard/mcp)** → *Create token*. The token starts with `cpd_` and is shown once. You can revoke it there at any time.
+Give your agent one URL: **`https://mcp.ceptory.com/mcp`**
 
-## 2. Connect your agent
+On first use, the agent opens Ceptory in your browser. Sign in if needed and click **Allow**, the same way you connect Ceptory Desktop. There's no key to copy. Every connected agent is listed at [ceptory.com/dashboard/mcp](https://www.ceptory.com/dashboard/mcp), where you can revoke it.
 
-The hosted endpoint is `https://mcp.ceptory.com/mcp`. It uses Streamable HTTP with MCP 2026-07-28, and 2025-era clients also work. Authenticate with `Authorization: Bearer <token>`.
+The server uses Streamable HTTP with MCP 2026-07-28, and 2025-era clients also work. It signs in with OAuth 2.1 and PKCE, which clients discover on their own through RFC 9728/8414 metadata and dynamic client registration.
 
-**Claude Code**
+**Claude Code**: run this, then type `/mcp` and choose Authenticate.
 
 ```sh
-claude mcp add --transport http ceptory https://www.ceptory.com/api/mcp \
-  --header "Authorization: Bearer <token>"
+claude mcp add --transport http ceptory https://mcp.ceptory.com/mcp
 ```
 
-**Claude Desktop**: add this to `claude_desktop_config.json`. It uses this package as a stdio bridge and needs Node.js 20 or later.
+**Claude Desktop and claude.ai**: Settings → Connectors → Add custom connector → `https://mcp.ceptory.com/mcp`.
+
+**Cursor** (`~/.cursor/mcp.json`):
 
 ```json
-{ "mcpServers": { "ceptory": { "command": "npx", "args": ["-y", "ceptory-mcp"], "env": { "CEPTORY_TOKEN": "<token>" } } } }
+{ "mcpServers": { "ceptory": { "url": "https://mcp.ceptory.com/mcp" } } }
 ```
 
-**Cursor**: add this to `~/.cursor/mcp.json`.
+**VS Code** (`.vscode/mcp.json`):
 
 ```json
-{ "mcpServers": { "ceptory": { "url": "https://mcp.ceptory.com/mcp", "headers": { "Authorization": "Bearer <token>" } } } }
+{ "servers": { "ceptory": { "type": "http", "url": "https://mcp.ceptory.com/mcp" } } }
 ```
 
-**VS Code**: add this to `.vscode/mcp.json`.
+**Codex**:
+
+```sh
+codex mcp add ceptory --url https://mcp.ceptory.com/mcp && codex mcp login ceptory
+```
+
+**Gemini CLI** (`~/.gemini/settings.json`): add the config below, then run `/mcp auth ceptory`.
 
 ```json
-{ "servers": { "ceptory": { "type": "http", "url": "https://mcp.ceptory.com/mcp", "headers": { "Authorization": "Bearer <token>" } } } }
+{ "mcpServers": { "ceptory": { "httpUrl": "https://mcp.ceptory.com/mcp" } } }
 ```
 
-**Codex**: add this to `~/.codex/config.toml`.
+**No browser sign-in?** Create a token at [ceptory.com/dashboard/mcp](https://www.ceptory.com/dashboard/mcp) and send it as `Authorization: Bearer <token>`. For stdio-only clients, run this package instead: `CEPTORY_TOKEN=<token> npx -y ceptory-mcp`.
 
-```toml
-[mcp_servers.ceptory]
-command = "npx"
-args = ["-y", "ceptory-mcp"]
-env = { CEPTORY_TOKEN = "<token>" }
-```
-
-**Gemini CLI**: add this to `~/.gemini/settings.json`.
-
-```json
-{ "mcpServers": { "ceptory": { "httpUrl": "https://mcp.ceptory.com/mcp", "headers": { "Authorization": "Bearer <token>" } } } }
-```
-
-**Anything else**: point any MCP client at the URL with the header, or run `CEPTORY_TOKEN=<token> npx -y ceptory-mcp` for stdio.
+Docs for LLMs are at [ceptory.com/mcp/llms.txt](https://www.ceptory.com/mcp/llms.txt).
 
 ## 3. Ask
 
@@ -78,7 +72,7 @@ The tools run on Ceptory. This package provides two things:
 1. **A stdio bridge** (`ceptory-mcp`). It connects stdio-only clients to the hosted server. It also adds what only a local process can do:
    - `upload_video_file`: uploads a video from your computer (up to 2 GB) and starts indexing it.
    - `image_path`: tools that take an image accept a local JPEG or PNG path as well as base64.
-2. **An HTTP gateway** (`ceptory-mcp --http`). It runs a standalone `/mcp` endpoint, for example on Railway, and forwards to Ceptory. It holds no credentials: each client sends its own token. `GET /health` reports health.
+2. **An HTTP gateway** (`ceptory-mcp --http`, which is what `npm start` runs). This is what serves `mcp.ceptory.com`. It forwards `/mcp` to Ceptory, publishes the OAuth protected-resource metadata, and redirects `/` and `/llms.txt` to the docs. It holds no credentials. `GET /health` reports health.
 
 | Variable | Default | Used by |
 | --- | --- | --- |
