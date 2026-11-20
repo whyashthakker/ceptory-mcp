@@ -115,7 +115,10 @@ async function main() {
   if (values.help) return void console.error(HELP);
   if (values.version) return void console.error(VERSION);
 
-  if (values.http) {
+  // On a host (PORT set) with no token, there is nothing for stdio to do: serve the gateway.
+  // The gateway never needs a token; every client sends its own.
+  const hosted = !process.env.CEPTORY_TOKEN?.trim() && Boolean(process.env.PORT) && !process.stdin.isTTY;
+  if (values.http || hosted) {
     const { serveGateway } = await import("./gateway.js");
     const port = Number(values.port ?? process.env.PORT ?? 3333);
     if (!Number.isInteger(port) || port <= 0 || port > 65535) throw new Error(`Invalid port: ${values.port ?? process.env.PORT}`);

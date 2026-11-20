@@ -15,9 +15,9 @@
   "scripts": {
     "build": "tsc && node -e \"require('fs').chmodSync('build/index.js', '755')\"",
     "dev": "tsc --watch",
-    "start": "node build/index.js",
-    "start:http": "node build/index.js --http",
-    "prepublishOnly": "npm run build"
+    "start": "node build/index.js --http",
+    "prepublishOnly": "npm run build",
+    "start:stdio": "node build/index.js"
   },
   "engines": {
     "node": ">=20"
