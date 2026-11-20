@@ -17,7 +17,7 @@ Go to **[ceptory.com/dashboard/mcp](https://www.ceptory.com/dashboard/mcp)** →
 
 ## 2. Connect your agent
 
-The hosted endpoint is `https://www.ceptory.com/api/mcp`. It uses Streamable HTTP with MCP 2026-07-28, and 2025-era clients also work. Authenticate with `Authorization: Bearer <token>`.
+The hosted endpoint is `https://mcp.ceptory.com/mcp`. It uses Streamable HTTP with MCP 2026-07-28, and 2025-era clients also work. Authenticate with `Authorization: Bearer <token>`.
 
 **Claude Code**
 
@@ -35,13 +35,13 @@ claude mcp add --transport http ceptory https://www.ceptory.com/api/mcp \
 **Cursor**: add this to `~/.cursor/mcp.json`.
 
 ```json
-{ "mcpServers": { "ceptory": { "url": "https://www.ceptory.com/api/mcp", "headers": { "Authorization": "Bearer <token>" } } } }
+{ "mcpServers": { "ceptory": { "url": "https://mcp.ceptory.com/mcp", "headers": { "Authorization": "Bearer <token>" } } } }
 ```
 
 **VS Code**: add this to `.vscode/mcp.json`.
 
 ```json
-{ "servers": { "ceptory": { "type": "http", "url": "https://www.ceptory.com/api/mcp", "headers": { "Authorization": "Bearer <token>" } } } }
+{ "servers": { "ceptory": { "type": "http", "url": "https://mcp.ceptory.com/mcp", "headers": { "Authorization": "Bearer <token>" } } } }
 ```
 
 **Codex**: add this to `~/.codex/config.toml`.
@@ -56,7 +56,7 @@ env = { CEPTORY_TOKEN = "<token>" }
 **Gemini CLI**: add this to `~/.gemini/settings.json`.
 
 ```json
-{ "mcpServers": { "ceptory": { "httpUrl": "https://www.ceptory.com/api/mcp", "headers": { "Authorization": "Bearer <token>" } } } }
+{ "mcpServers": { "ceptory": { "httpUrl": "https://mcp.ceptory.com/mcp", "headers": { "Authorization": "Bearer <token>" } } } }
 ```
 
 **Anything else**: point any MCP client at the URL with the header, or run `CEPTORY_TOKEN=<token> npx -y ceptory-mcp` for stdio.
